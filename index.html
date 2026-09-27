@@ -1,138 +1,18 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<title>Muscat Smart Traffic Simulation</title>
-<style>
-*{box-sizing:border-box}body{margin:0;background:#07111d;color:#f4f7fb;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}
-header{padding:14px 16px;background:#0d1b2a;border-bottom:1px solid #263d54}
-h1{font-size:20px;margin:0 0 4px}p{margin:0;color:#9eb0c2;font-size:13px}
-.controls{display:flex;gap:8px;flex-wrap:wrap;padding:12px 16px;background:#0a1725}
-button,select{font-size:15px;padding:10px 12px;border-radius:9px;border:1px solid #35506a;background:#13283d;color:#fff}
-button{font-weight:700}.layout{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:12px;padding:12px}
-.panel{background:#0d1b2a;border:1px solid #243b52;border-radius:12px;overflow:hidden}
-.canvasWrap{padding:8px;overflow:auto}canvas{display:block;width:100%;height:auto;min-width:720px;background:#173227;border-radius:8px}
-.stats{padding:14px}.stats h2{font-size:16px;margin:0 0 12px}.metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.metric{padding:10px;border-radius:9px;background:#10243a}.metric small{display:block;color:#91a6ba}.metric strong{font-size:20px}
-.note{font-size:12px;line-height:1.55;color:#9eb0c2;margin-top:14px}
-.status{padding:8px 16px 14px;color:#72dca5;font-size:13px}
-@media(max-width:850px){.layout{grid-template-columns:1fr}.stats{order:-1}.metrics{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:560px){.metrics{grid-template-columns:1fr 1fr}h1{font-size:17px}}
-</style>
-</head>
-<body>
-<header><h1>Muscat Smart Traffic Management Simulation</h1><p>Burj Al Sahwa → Sultan Qaboos Road → Muscat International Airport</p></header>
-<div class="controls">
-<select id="mode"><option value="smart">Smart Adaptive</option><option value="fixed">Fixed-Time</option></select>
-<select id="demand"><option value="1">Normal Demand</option><option value="1.45">Peak Demand</option><option value="1.8">Incident Stress Test</option></select>
-<button id="toggle">Pause</button><button id="reset">Reset</button>
-</div>
-<div class="layout">
-<div class="panel canvasWrap"><canvas id="sim" width="1100" height="650"></canvas></div>
-<div class="panel stats"><h2>Live Performance</h2><div class="metrics">
-<div class="metric"><small>Vehicles</small><strong id="vehicles">0</strong></div>
-<div class="metric"><small>Passed</small><strong id="passed">0</strong></div>
-<div class="metric"><small>Avg. wait</small><strong id="avgwait">0 s</strong></div>
-<div class="metric"><small>Max queue</small><strong id="maxq">0</strong></div>
-<div class="metric"><small>Stops</small><strong id="stops">0</strong></div>
-<div class="metric"><small>Controller</small><strong id="ctrl" style="font-size:15px">Smart</strong></div>
-</div><div class="note">Blue vehicles travel toward the airport. Amber vehicles travel toward Burj Al Sahwa. This is a simulation prototype, not a live public-road controller.</div></div>
-</div>
-<div class="status" id="status">Simulation running ✓</div>
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>16-Signal Smart Traffic Simulation</title><style>
+*{box-sizing:border-box}body{margin:0;background:#07111d;color:#eef5fb;font-family:Arial,sans-serif}header{padding:14px 18px;background:#0d1b2a}h1{margin:0;font-size:20px}header p{margin:5px 0 0;color:#9eb0c2;font-size:13px}.bar{padding:10px 18px;display:flex;gap:8px;flex-wrap:wrap;background:#0a1725}button,select{padding:9px 11px;border:1px solid #36516b;border-radius:8px;background:#13283d;color:white;font-size:14px}.wrap{display:grid;grid-template-columns:minmax(650px,1fr) 260px;gap:10px;padding:10px}.card{background:#0d1b2a;border:1px solid #263e55;border-radius:10px;overflow:hidden}.stage{overflow:auto;padding:8px}canvas{display:block;width:100%;height:auto;min-width:650px;background:#183526}.side{padding:12px}.metrics{display:grid;grid-template-columns:1fr 1fr;gap:7px}.m{background:#10243a;border-radius:8px;padding:9px}.m small{display:block;color:#9eb0c2}.m b{font-size:18px}.legend{font-size:12px;line-height:1.6;color:#a9bac9;margin-top:12px}.green{color:#35d07f}.red{color:#ff5d66}@media(max-width:800px){.wrap{grid-template-columns:1fr}.side{order:-1}.metrics{grid-template-columns:repeat(3,1fr)}}</style></head><body>
+<header><h1>16-Signal Smart Traffic Simulation</h1><p>4×4 network • S1–S16 • Right-hand traffic • Base demand: 2,572 vehicles</p></header>
+<div class="bar"><select id="mode"><option value="smart">Smart Adaptive</option><option value="fixed">Fixed-Time</option></select><select id="load"><option value="1">Base Scenario — 2,572</option><option value="1.25">Heavy Traffic</option><option value=".7">Light Traffic</option></select><button id="toggle">Pause</button><button id="reset">Reset</button></div>
+<div class="wrap"><div class="card stage"><canvas id="c" width="1000" height="760"></canvas></div><div class="card side"><b>Live Performance</b><div class="metrics" style="margin-top:10px"><div class="m"><small>Represented</small><b id="rep">2,572</b></div><div class="m"><small>Moving icons</small><b id="num">0</b></div><div class="m"><small>Passed nodes</small><b id="passed">0</b></div><div class="m"><small>Avg wait</small><b id="wait">0 s</b></div><div class="m"><small>Max queue</small><b id="queue">0</b></div><div class="m"><small>Stops</small><b id="stops">0</b></div></div><div class="legend"><span class="green">● Green</span> vehicle movement permitted<br><span class="red">● Red</span> vehicle movement stopped<br>Blue cars: east/west roads<br>Amber cars: north/south roads<br><br>Each displayed vehicle represents a group of real vehicles. Fixed and Smart modes use the same network and demand scale.</div></div></div>
 <script>
-(function(){
-"use strict";
-var canvas=document.getElementById("sim"),ctx=canvas.getContext("2d");
-var mode=document.getElementById("mode"), demand=document.getElementById("demand");
-var running=true,tick=0,cars=[],passed=0,totalWait=0,stopEvents=0,maxQueue=0;
-var signals=[0.29,0.52,0.74];
-
-function point(s,off){
- var u=1-s,ax=80,ay=535,bx=360,by=505,cx=730,cy=350,dx=1030,dy=145;
- var px=u*u*u*ax+3*u*u*s*bx+3*u*s*s*cx+s*s*s*dx;
- var py=u*u*u*ay+3*u*u*s*by+3*u*s*s*cy+s*s*s*dy;
- var e=.001,ss=Math.min(1,s+e),uu=1-ss;
- var qx=uu*uu*uu*ax+3*uu*uu*ss*bx+3*uu*ss*ss*cx+ss*ss*ss*dx;
- var qy=uu*uu*uu*ay+3*uu*uu*ss*by+3*uu*ss*ss*cy+ss*ss*ss*dy;
- var vx=qx-px,vy=qy-py,L=Math.sqrt(vx*vx+vy*vy)||1;
- return{x:px-vy/L*off,y:py+vx/L*off,a:Math.atan2(vy,vx)};
-}
-function road(off,width,color,dashed){
- ctx.beginPath();
- for(var i=0;i<=120;i++){var p=point(i/120,off);if(i===0)ctx.moveTo(p.x,p.y);else ctx.lineTo(p.x,p.y)}
- ctx.strokeStyle=color;ctx.lineWidth=width;ctx.setLineDash(dashed?[12,10]:[]);ctx.stroke();ctx.setLineDash([]);
-}
-function isGreen(index,dir){
- if(mode.value==="fixed")return((Math.floor(tick/300)+index)%2===0);
- var qF=0,qB=0;
- for(var i=0;i<cars.length;i++){var d=Math.abs(cars[i].s-signals[index]);if(d<.075){if(cars[i].dir>0)qF++;else qB++;}}
- var cycle=Math.floor(tick/180);
- if(qF===qB)return((cycle+index)%2===0);
- return dir>0?qF>=qB:qB>qF;
-}
-function reset(){
- cars=[];passed=0;totalWait=0;stopEvents=0;maxQueue=0;tick=0;
- var n=Math.round(72*Number(demand.value));
- for(var i=0;i<n;i++)cars.push({s:Math.random(),dir:i%2===0?1:-1,lane:(i%3)-1,speed:.00075+Math.random()*.00045,wait:0,stopped:false});
- updateStats();
-}
-function drawBackground(){
- ctx.fillStyle="#173227";ctx.fillRect(0,0,1100,650);
- ctx.fillStyle="#143b52";ctx.fillRect(0,0,1100,95);
- ctx.fillStyle="#b7d4e8";ctx.font="13px Arial";ctx.fillText("COASTAL SIDE",28,34);
- ctx.fillStyle="#16283a";ctx.fillRect(445,72,365,160);
- ctx.strokeStyle="#38516a";ctx.lineWidth=2;ctx.strokeRect(445,72,365,160);
- ctx.fillStyle="#fff";ctx.font="bold 20px Arial";ctx.fillText("MUSCAT INTERNATIONAL AIRPORT",475,145);
- ctx.fillStyle="#9eb0c2";ctx.font="13px Arial";ctx.fillText("Airport access / ramps / flyover",520,171);
- road(0,112,"#303944",false);road(0,7,"#07111d",false);
- [-42,-21,21,42].forEach(function(o){road(o,1.5,"#b8c4ce",true)});
- ctx.strokeStyle="#303944";ctx.lineWidth=30;ctx.lineCap="round";
- ctx.beginPath();ctx.moveTo(520,414);ctx.bezierCurveTo(500,345,520,285,570,228);ctx.stroke();
- ctx.beginPath();ctx.moveTo(655,358);ctx.bezierCurveTo(668,308,690,265,728,225);ctx.stroke();
- ctx.fillStyle="#0d1b2a";ctx.beginPath();ctx.arc(112,525,45,0,Math.PI*2);ctx.fill();
- ctx.strokeStyle="#58c7ff";ctx.lineWidth=4;ctx.stroke();
- ctx.fillStyle="#fff";ctx.font="bold 12px Arial";ctx.fillText("BURJ AL SAHWA",62,522);
- ctx.fillStyle="#9eb0c2";ctx.font="11px Arial";ctx.fillText("Gateway",91,540);
- ctx.strokeStyle="#303944";ctx.lineWidth=38;ctx.beginPath();ctx.moveTo(115,570);ctx.lineTo(150,650);ctx.stroke();
- ctx.fillStyle="#9eb0c2";ctx.font="12px Arial";ctx.fillText("Route 15",158,620);
- ctx.fillStyle="#fff";ctx.font="bold 15px Arial";ctx.fillText("SULTAN QABOOS ROAD / ROUTE 1",430,530);
-}
-function drawSignal(s,index){
- var p=point(s,0),gF=isGreen(index,1),gB=isGreen(index,-1);
- ctx.fillStyle="#07111d";ctx.beginPath();ctx.arc(p.x,p.y,16,0,Math.PI*2);ctx.fill();
- ctx.fillStyle=(gF||gB)?"#35d07f":"#ff5d66";ctx.beginPath();ctx.arc(p.x,p.y,9,0,Math.PI*2);ctx.fill();
-}
-function update(){
- var queueNow=0;
- if(running){
-  for(var i=0;i<cars.length;i++){
-   var car=cars[i],blocked=false;
-   for(var j=0;j<signals.length;j++){var dist=(signals[j]-car.s)*car.dir;if(dist>0&&dist<.022&&!isGreen(j,car.dir)){blocked=true;break;}}
-   if(blocked){queueNow++;car.wait++;if(!car.stopped){stopEvents++;car.stopped=true;}}
-   else{car.stopped=false;car.s+=car.dir*car.speed;if(car.s>1){car.s=0;passed++;}if(car.s<0){car.s=1;passed++;}}
-  }
-  totalWait+=queueNow;if(queueNow>maxQueue)maxQueue=queueNow;tick++;
- }
-}
-function drawCars(){
- for(var i=0;i<cars.length;i++){var car=cars[i],p=point(car.s,car.dir*(27+car.lane*16));
-  ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.a+(car.dir<0?Math.PI:0));ctx.fillStyle=car.dir>0?"#58c7ff":"#ffbf47";ctx.fillRect(-7,-4,14,8);ctx.restore();}
-}
-function updateStats(){
- document.getElementById("vehicles").textContent=cars.length;
- document.getElementById("passed").textContent=passed;
- document.getElementById("avgwait").textContent=(cars.length?totalWait/cars.length/60:0).toFixed(1)+" s";
- document.getElementById("maxq").textContent=maxQueue;
- document.getElementById("stops").textContent=stopEvents;
- document.getElementById("ctrl").textContent=mode.value==="smart"?"Smart":"Fixed";
-}
-function frame(){drawBackground();update();for(var i=0;i<signals.length;i++)drawSignal(signals[i],i);drawCars();if(tick%15===0)updateStats();requestAnimationFrame(frame);}
-document.getElementById("toggle").addEventListener("click",function(){running=!running;this.textContent=running?"Pause":"Start";document.getElementById("status").textContent=running?"Simulation running ✓":"Simulation paused";});
-document.getElementById("reset").addEventListener("click",reset);
-mode.addEventListener("change",reset);demand.addEventListener("change",reset);
-reset();frame();
-})();
-</script>
-</body></html>
+(function(){'use strict';var c=document.getElementById('c'),x=c.getContext('2d'),mode=document.getElementById('mode'),load=document.getElementById('load');var run=true,t=0,cars=[],passed=0,wait=0,stops=0,maxQ=0;var X=[155,385,615,845],Y=[130,300,470,640];var base=[136,130,143,161,154,169,175,167,141,168,174,187,145,202,146,174];
+function sig(r,col,axis){var idx=r*4+col;if(mode.value==='fixed')return ((Math.floor(t/240)+r+col)%2===0)?axis==='h':axis==='v';var h=0,v=0;for(var i=0;i<cars.length;i++){var a=cars[i];if(a.target===idx){if(a.axis==='h')h++;else v++;}}if(h===v)return ((Math.floor(t/150)+idx)%2===0)?axis==='h':axis==='v';return axis==='h'?h>=v:v>h}
+function nearestTarget(a){var best=-1,bd=1e9;for(var r=0;r<4;r++)for(var q=0;q<4;q++){var id=r*4+q,d=a.axis==='h'?Math.abs(a.x-X[q])+Math.abs(a.y-Y[r])*3:Math.abs(a.y-Y[r])+Math.abs(a.x-X[q])*3;if(d<bd){bd=d;best=id}}return best}
+function reset(){cars=[];passed=wait=stops=maxQ=t=0;var scale=+load.value,n=Math.round(104*scale);for(var i=0;i<n;i++){var h=i%2===0;if(h){var r=i%4,dir=(i%4<2)?1:-1;cars.push({axis:'h',x:40+Math.random()*920,y:Y[r]+(dir>0?11:-11),dir:dir,row:r,lane:i%2,target:-1,stop:false})}else{var q=i%4,dir2=(i%6<3)?1:-1;cars.push({axis:'v',x:X[q]+(dir2>0?-11:11),y:55+Math.random()*650,dir:dir2,col:q,lane:i%2,target:-1,stop:false})}}document.getElementById('rep').textContent=Math.round(2572*scale).toLocaleString();stats()}
+function road(){x.fillStyle='#183526';x.fillRect(0,0,c.width,c.height);x.strokeStyle='#343e49';x.lineWidth=50;for(var i=0;i<4;i++){x.beginPath();x.moveTo(30,Y[i]);x.lineTo(970,Y[i]);x.stroke();x.beginPath();x.moveTo(X[i],35);x.lineTo(X[i],725);x.stroke()}x.strokeStyle='#09121c';x.lineWidth=4;for(i=0;i<4;i++){x.beginPath();x.moveTo(30,Y[i]);x.lineTo(970,Y[i]);x.stroke();x.beginPath();x.moveTo(X[i],35);x.lineTo(X[i],725);x.stroke()}x.strokeStyle='#b8c4ce';x.lineWidth=1;x.setLineDash([9,9]);for(i=0;i<4;i++){x.beginPath();x.moveTo(30,Y[i]-22);x.lineTo(970,Y[i]-22);x.stroke();x.beginPath();x.moveTo(30,Y[i]+22);x.lineTo(970,Y[i]+22);x.stroke();x.beginPath();x.moveTo(X[i]-22,35);x.lineTo(X[i]-22,725);x.stroke();x.beginPath();x.moveTo(X[i]+22,35);x.lineTo(X[i]+22,725);x.stroke()}x.setLineDash([])}
+function signals(){for(var r=0;r<4;r++)for(var q=0;q<4;q++){var id=r*4+q,h=sig(r,q,'h'),v=sig(r,q,'v');x.fillStyle='#08111b';x.fillRect(X[q]-34,Y[r]-34,68,68);x.fillStyle=h?'#35d07f':'#ff5d66';x.beginPath();x.arc(X[q]-28,Y[r]-27,7,0,7);x.fill();x.beginPath();x.arc(X[q]+28,Y[r]+27,7,0,7);x.fill();x.fillStyle=v?'#35d07f':'#ff5d66';x.beginPath();x.arc(X[q]+27,Y[r]-28,7,0,7);x.fill();x.beginPath();x.arc(X[q]-27,Y[r]+28,7,0,7);x.fill();x.fillStyle='#fff';x.font='bold 12px Arial';x.textAlign='center';x.fillText('S'+(id+1),X[q],Y[r]+4)}}
+function step(){var qnow=0;if(run){for(var i=0;i<cars.length;i++){var a=cars[i];a.target=nearestTarget(a);var id=a.target,r=Math.floor(id/4),q=id%4,blocked=false;if(a.axis==='h'){var d=(X[q]-a.x)*a.dir;if(d>0&&d<28&&!sig(r,q,'h'))blocked=true}else{var d2=(Y[r]-a.y)*a.dir;if(d2>0&&d2<28&&!sig(r,q,'v'))blocked=true}if(blocked){qnow++;wait++;if(!a.stop){stops++;a.stop=true}}else{a.stop=false;var sp=1.15;if(a.axis==='h'){a.x+=a.dir*sp;if(a.x>980){a.x=20;passed++}if(a.x<20){a.x=980;passed++}}else{a.y+=a.dir*sp;if(a.y>730){a.y=30;passed++}if(a.y<30){a.y=730;passed++}}}}if(qnow>maxQ)maxQ=qnow;t++}return qnow}
+function drawCars(){for(var i=0;i<cars.length;i++){var a=cars[i];x.fillStyle=a.axis==='h'?'#58c7ff':'#ffbf47';if(a.axis==='h')x.fillRect(a.x-6,a.y-3,12,6);else x.fillRect(a.x-3,a.y-6,6,12)}}
+function stats(){document.getElementById('num').textContent=cars.length;document.getElementById('passed').textContent=passed;document.getElementById('wait').textContent=(cars.length?wait/cars.length/60:0).toFixed(1)+' s';document.getElementById('queue').textContent=maxQ;document.getElementById('stops').textContent=stops}
+function frame(){road();step();signals();drawCars();if(t%12===0)stats();requestAnimationFrame(frame)}
+document.getElementById('toggle').onclick=function(){run=!run;this.textContent=run?'Pause':'Start'};document.getElementById('reset').onclick=reset;mode.onchange=reset;load.onchange=reset;reset();frame()})();
+</script></body></html>
